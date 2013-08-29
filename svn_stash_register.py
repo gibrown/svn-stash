@@ -116,7 +116,7 @@ class svn_stash:
 				filepath = SVN_STASH_DIR + "/" + str(randkey) + ".stash.patch"
 
 				if os.path.isfile(filepath):
-					result  = os.popen("patch -p0 < " + filepath).read()
+					result  = os.popen("svn patch " + filepath).read()
 					#print "pop " + target_file
 				else:
 					print 'Patch file cannot be found.'
