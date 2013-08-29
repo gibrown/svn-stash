@@ -22,7 +22,7 @@ def execute_stash_push(target_file,filename_list):
 	if len(filename_list)>0:
 		#save the svn status into a stash
 		stash = svn_stash()
-		stash.push(target_file,filename_list)		
+		stash.push(target_file,filename_list)
 		register = svn_stash_register()
 		register.register_stash(stash)
 		register.write()
@@ -60,7 +60,7 @@ def execute_stash_show(target_file,filename_list):
 	for stash_id in register.stashes:
 		current_stash = svn_stash()
 		current_stash.load(stash_id)
-		print current_stash		
+		print current_stash
 
 def execute_stash_help(target_file,filename_list):
 	b =  "\033[1m"
@@ -98,7 +98,7 @@ def execute_svn_stash(command,target_file,filename_list):
 
 #obtain the svn status files
 def obtain_svn_status_files():
-	status_files = [] 
+	status_files = []
 	status_list = os.popen('svn st').read()
 	status_list = status_list.split("\n")
 	for line in status_list:
@@ -115,11 +115,11 @@ def main(args):
 	command = COMMAND_DEFAULT
 	if len(args)>1:
 		command = args[1]
-	
+
 	target_file = TARGET_FILE_DEFAULT
 	if len(args)>2:
 		target_file = args[2]
-	
+
 	filename_list = obtain_svn_status_files()
 	execute_svn_stash(command,target_file,filename_list)
 
