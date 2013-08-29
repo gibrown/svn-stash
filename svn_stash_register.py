@@ -117,17 +117,9 @@ class svn_stash:
 
 				if os.path.isfile(filepath):
 					result  = os.popen("patch -p0 < " + filepath).read()
-					result += os.popen("rm " + filepath).read()
 					#print "pop " + target_file
 				else:
-					print 'randFile cannot be found, patch failed.'
-
-			#delete the file of svn_stash
-			filepath = SVN_STASH_DIR + "/" + str(self.key)
-			if os.path.isfile(filepath):
-				result += os.popen("rm " + filepath).read()
-			else:
-				print 'registerFile cannot be found.'
+					print 'Patch file cannot be found.'
 
 	def write(self):
 		#Create file for svn stash
