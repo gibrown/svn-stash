@@ -112,12 +112,18 @@ class svn_stash:
 		result = ""
 		if os.path.exists(SVN_STASH_DIR):
 			for target_file in self.files:
-				randkey = self.files[target_file]
-				result = os.popen("patch -p0 < " + SVN_STASH_DIR + "/" + str(randkey) + ".stash.patch").read()
-				result += os.popen("rm " + SVN_STASH_DIR + "/" + str(randkey) + ".stash.patch").read()
-				#print "pop " + target_file
+				randkey  = self.files[target_file]
+				filepath = SVN_STASH_DIR + "/" + str(randkey) + ".stash.patch"
+
+				if os.path.isfile(filepath):
+					result  = os.popen("patch -p0 < " + filepath).read()
+					result += os.popen("rm " + filepath).read()
+					#print "pop " + target_file
+
 			#delete the file of svn_stash
-			result += os.popen("rm " + SVN_STASH_DIR + "/" + str(self.key)).read()
+			filepath = SVN_STASH_DIR + "/" + str(self.key)
+			if os.path.isfile(filepath):
+				result += os.popen("rm " + filepath).read()
 
 	def write(self):
 		#Create file for svn stash
