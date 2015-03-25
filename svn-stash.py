@@ -42,24 +42,19 @@ def execute_stash_pop(target_file,info):
 def execute_stash_list(target_file,info):
 	#obtain the list of stashes.
 	register = svn_stash_register()
-	for stash_id in register.stashes:
-		print stash_id
+	register.list()
 
 def execute_stash_clear(target_file,info):
 	#delete all stashes.
 	register = svn_stash_register()
-	marked_stashes = list(register.stashes)
-	for stash in marked_stashes:
-		current_stash = svn_stash()
-		current_stash.load(stash)
-		register.delete_stash(current_stash)
+	register.clear()
 
 def execute_stash_show(target_file,info):
 	#view all diffs of all stashes.
 	register = svn_stash_register()
-	for stash_id in register.stashes:
+	for stash_meta in register.stashes:
 		current_stash = svn_stash()
-		current_stash.load(stash_id)
+		current_stash.load(stash_meta['id'])
 		print current_stash
 
 def execute_stash_help(target_file,info):

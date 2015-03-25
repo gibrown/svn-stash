@@ -27,8 +27,8 @@ STASH_REGISTER_FILENAME = ".stashed_register"
 class svn_stash_register:
 	"""A class to register all stashes."""
 	def __init__(self):
-		self.stashes = [] #list of stashes in the current dir
-		self.all_stashes = [] #list of all stashes in all directories
+		self.stashes = [] #list of stashes (with meta data) in the current dir
+		self.all_stashes = [] #list of all stashes (with meta data) in all directories
 		self.load() #load register
 
 	def load(self):
@@ -38,12 +38,16 @@ class svn_stash_register:
 			with open(current_dir,"r") as f:
 				for line in f:
 					content = line.rstrip()
-					content = content.split(" ")
+					content = content.split("\t")
 					if len(content)>0:
-						stash_id = content[0]
-						if is_a_current_stash(stash_id):
-							self.stashes.append(stash_id)
-						self.all_stashes.append(stash_id)
+						stash_meta = { 'id': content[0] }
+						if ( len(content) > 1 ):
+							stash_meta['comment'] = content[1]
+						else:
+							stash_meta['comment'] = ''
+						if is_a_current_stash(stash_meta['id']):
+							self.stashes.append(stash_meta)
+						self.all_stashes.append(stash_meta)
 				f.close()
 		except IOError as e:
 			print e
@@ -55,8 +59,8 @@ class svn_stash_register:
 			current_dir = SVN_STASH_DIR + "/" + STASH_REGISTER_FILENAME
 			with open(current_dir,"w") as f:
 				content = []
-				for stash_id in self.all_stashes:
-					line = str(stash_id) + "\n"
+				for stash_meta in self.all_stashes:
+					line = str(stash_meta['id']) + "\t" + str(stash_meta['comment']) + "\n"
 					content.append(line)
 				f.writelines(content)
 				f.close()
@@ -67,26 +71,43 @@ class svn_stash_register:
 		length = len(self.stashes)
 		if length>0:
 			stash = svn_stash()
-			stash_id = self.stashes[length-1]
-			stash.load(stash_id)
+			stash_meta = self.stashes[length-1]
+			stash.load(stash_meta['id'])
 			return stash
 		return False
 
 	def register_stash(self,stash): #stash must be a svn-stash instance
 		stash_id = stash.key
-		self.stashes.append(stash_id)
-		self.all_stashes.append(stash_id)
+		stash_comment = raw_input( "Comments make future-you happier: ")
+		stash_meta = { 'id': stash_id, 'comment': stash_comment }
+		self.stashes.append(stash_meta)
+		self.all_stashes.append(stash_meta)
 		stash.write()
 		print "created stash " + str(stash_id)
 
 	def delete_stash(self,stash):
 		stash_id = stash.key
-		self.stashes.remove(stash_id)
-		self.all_stashes.remove(stash_id)
+		self.stashes[:] = [d for d in self.stashes if d.get('id') != stash_id]
+		self.all_stashes[:] = [d for d in self.all_stashes if d.get('id') != stash_id]
 		self.write()
 		#Remove stash files
 		stash.clear()
 		print "deleted stash " + str(stash_id)
+
+	def list(self):
+		for stash_meta in self.stashes:
+			print stash_meta['id'] + "\t" + stash_meta['comment']
+
+	def clear(self):
+		self.list()
+		confirm = raw_input( 'Really delete all this work? [Y/N]: ' )
+		if ( not ( confirm == 'y') ):
+			return
+		ids = map(lambda x: x['id'], self.stashes)
+		for id in ids:
+			current_stash = svn_stash()
+			current_stash.load(id)
+			self.delete_stash(current_stash)
 
 class svn_stash:
 	"""A class to contain all information about stashes."""
