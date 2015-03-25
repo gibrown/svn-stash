@@ -76,6 +76,16 @@ class svn_stash_register:
 			return stash
 		return False
 
+	def obtain_stash_by_id(self,id):
+		ids = [m for m in self.stashes if m['id'] == id]
+		length = len(ids)
+		if length>0:
+			stash = svn_stash()
+			stash_meta = self.stashes[length-1]
+			stash.load(stash_meta['id'])
+			return stash
+		return False
+
 	def register_stash(self,stash): #stash must be a svn-stash instance
 		stash_id = stash.key
 		stash_comment = raw_input( "Comments make future-you happier: ")

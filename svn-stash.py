@@ -39,6 +39,16 @@ def execute_stash_pop(target_file,info):
 	else:
 		print "there are no previous stashes."
 
+def execute_stash_apply(stash_id):
+	#obtain stash by id
+	register = svn_stash_register()
+	stash = register.obtain_stash_by_id(stash_id)
+	if stash:
+		stash.pop()
+		register.delete_stash(stash)
+	else:
+		print "No stash with id " + str(stash_id)
+
 def execute_stash_list(target_file,info):
 	#obtain the list of stashes.
 	register = svn_stash_register()
@@ -68,6 +78,7 @@ def execute_stash_help(target_file,info):
 	help_content += "\tsvn stash show\n"
 	help_content += "\tsvn stash push\n"
 	help_content += "\tsvn stash pop\n"
+	help_content += "\tsvn stash apply <id>\n"
 	help_content += "\tsvn stash clear\n"
 	help_content += "\tsvn stash help\n"
 	help_content += "\n" + b + "DESCRIPTION" + end_b +"\n"
@@ -76,12 +87,17 @@ def execute_stash_help(target_file,info):
 
 
 #Parser order and file of the command
-def execute_svn_stash(command,target_file,info):
+def execute_svn_stash(command,target_file,info,args):
 	#print command+","+target_file
 	if command == "push":
 		execute_stash_push(target_file,info)
 	elif command == "pop":
 		execute_stash_pop(target_file,info)
+	elif command == "apply":
+		if len(args)<3:
+			print 'Need to specify the stash id.'
+			sys.exit()
+		execute_stash_apply(args[2])
 	elif command == "list":
 		execute_stash_list(target_file,info)
 	elif command == "clear":
@@ -122,7 +138,7 @@ def main(args):
 		files = args[2:]
 
 	info = obtain_svn_status_files(files)
-	execute_svn_stash(command,TARGET_FILE_DEFAULT,info)
+	execute_svn_stash(command,TARGET_FILE_DEFAULT,info,args)
 
 
 if __name__ == '__main__':

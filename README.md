@@ -30,6 +30,8 @@ Documentation
 This command will save all changes in a secure directory to be later recovered.
 ### pop ######
 This command will recover all changes of the last stash.
+### apply ######
+This command will recover all changes from a specified stash. The stash is removed from the list of saved stashes.
 ### list ######
 List all saved stashes.
 ### show ######
