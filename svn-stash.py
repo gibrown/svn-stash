@@ -37,7 +37,7 @@ def execute_stash_pop(target_file,info):
 		stash.pop()
 		register.delete_stash(stash)
 	else:
-		print "there are not previous stashes."
+		print "there are no previous stashes."
 
 def execute_stash_list(target_file,info):
 	#obtain the list of stashes.
@@ -76,7 +76,7 @@ def execute_stash_help(target_file,info):
 	help_content += "\tsvn stash clear\n"
 	help_content += "\tsvn stash help\n"
 	help_content += "\n" + b + "DESCRIPTION" + end_b +"\n"
-	help_content += "\tsvn-stash permits you to hide the changes that you don't want to commit just now. this can be more useful in some circumstances.\n"
+	help_content += "\tsvn-stash permits you to hide the changes that you don't want to commit just now.\n"
 	print help_content
 
 

@@ -77,7 +77,7 @@ class svn_stash_register:
 		self.stashes.append(stash_id)
 		self.all_stashes.append(stash_id)
 		stash.write()
-		print "create stash " + str(stash_id)
+		print "created stash " + str(stash_id)
 
 	def delete_stash(self,stash):
 		stash_id = stash.key
@@ -86,7 +86,7 @@ class svn_stash_register:
 		self.write()
 		#Remove stash files
 		stash.clear()
-		print "delete stash " + str(stash_id)
+		print "deleted stash " + str(stash_id)
 
 class svn_stash:
 	"""A class to contain all information about stashes."""
