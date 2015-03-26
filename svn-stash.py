@@ -49,6 +49,12 @@ def execute_stash_apply(stash_id):
 	else:
 		print "No stash with id " + str(stash_id)
 
+def execute_stash_id(stash_id):
+	#obtain stash by id
+	register = svn_stash_register()
+	stash = register.obtain_stash_by_id(stash_id)
+        print stash.key
+
 def execute_stash_list(target_file,info):
 	#obtain the list of stashes.
 	register = svn_stash_register()
@@ -100,6 +106,8 @@ def execute_svn_stash(command,target_file,info,args):
 		execute_stash_apply(args[2])
 	elif command == "list":
 		execute_stash_list(target_file,info)
+	elif command == "id":
+		execute_stash_id(args[2])
 	elif command == "clear":
 		execute_stash_clear(target_file,info)
 	elif command == "show":
